@@ -1,0 +1,51 @@
+﻿.app-container {
+    min-height: 100vh;
+    background: #f7fafc;
+  
+    .navbar {
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  
+      .nav-brand a {
+        text-decoration: none;
+      }
+
+      .nav-brand h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #1a202c;
+      }
+  
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+  
+        a {
+          text-decoration: none;
+          color: #718096;
+          font-weight: 600;
+          padding: 0.5rem 1rem;
+          border-radius: 6px;
+          transition: all 0.2s;
+  
+          &:hover {
+            color: #3182ce;
+            background: #ebf8ff;
+          }
+  
+          &.active {
+            color: #3182ce;
+            background: #ebf8ff;
+          }
+        }
+      }
+    }
+  
+    .main-content {
+      min-height: calc(100vh - 80px);
+    }
+  }

@@ -1,0 +1,17 @@
+﻿<div class="app-container">
+    <nav class="navbar">
+      <div class="nav-brand">
+        <a routerLink=""><h1>💰 Biedapp</h1></a>
+      </div>
+      <div class="nav-links">
+        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Dashboard</a>
+        <a routerLink="/transactions" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Transactions</a>
+        <a routerLink="/transactions/monthly" routerLinkActive="active">Monthly View</a>
+        <a routerLink="/statistics" routerLinkActive="active">Statistics</a>
+        <a routerLink="/settings" routerLinkActive="active">Settings</a>
+      </div>
+    </nav>
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>

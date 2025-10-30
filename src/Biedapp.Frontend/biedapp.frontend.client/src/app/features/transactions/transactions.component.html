@@ -1,0 +1,68 @@
+<div class="transactions-container">
+    <div class="header">
+      <h1>Transactions</h1>
+      <button class="btn btn-primary" (click)="openAddForm()">+ Add Transaction</button>
+    </div>
+  
+    <div *ngIf="loading" class="loading">Loading...</div>
+  
+    <div class="transactions-list" *ngIf="!loading">
+      <div *ngFor="let t of transactions" class="transaction-card">
+        <div class="transaction-info">
+          <span class="category">{{ t.category }}</span>
+          <span class="description">{{ t.description }}</span>
+          <span class="date">{{ t.date | date: 'MMM d, y' }}</span>
+        </div>
+        <div class="transaction-actions">
+          <span class="amount" [class]="getTypeClass(t.type)">
+            {{ getTypeSign(t.type) }}{{ t.amount | currencyFormat: t.currency }}
+          </span>
+          <button class="btn-icon" (click)="editTransaction(t)">✏️</button>
+          <button class="btn-icon" (click)="deleteTransaction(t.id)">🗑️</button>
+        </div>
+      </div>
+  
+      <div *ngIf="transactions.length === 0" class="empty">
+        No transactions yet. Click "Add Transaction" to get started.
+      </div>
+    </div>
+  
+    <!-- Transaction Form Modal -->
+    <div class="modal" *ngIf="showForm" (click)="closeForm()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h2>{{ editingId ? 'Edit' : 'Add' }} Transaction</h2>
+        <form (ngSubmit)="saveTransaction()">
+          <div class="form-group">
+            <label>Type</label>
+            <select [(ngModel)]="formData.type" name="type" required>
+              <option [value]="TransactionType.Income">Income</option>
+              <option [value]="TransactionType.Expense">Expense</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Amount</label>
+            <input type="number" [(ngModel)]="formData.amount" name="amount" required min="0" step="0.01">
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <input list="categories" [(ngModel)]="formData.category" name="category" required>
+            <datalist id="categories">
+              <option *ngFor="let cat of categories" [value]="cat">
+            </datalist>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" [(ngModel)]="formData.description" name="description">
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" [(ngModel)]="formData.date" name="date" required>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="closeForm()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

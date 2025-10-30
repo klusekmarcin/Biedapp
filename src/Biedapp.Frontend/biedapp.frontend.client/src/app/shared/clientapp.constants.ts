@@ -1,0 +1,1 @@
+export const defaultCurrencyCode: string = 'PLN';

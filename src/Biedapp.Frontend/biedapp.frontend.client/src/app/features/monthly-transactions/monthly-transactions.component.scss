@@ -1,0 +1,292 @@
+.monthly-transactions-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+  
+      h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a202c;
+      }
+    }
+  
+    .month-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+      .btn-nav {
+        padding: 0.5rem 1rem;
+        background: #edf2f7;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+  
+        &:hover:not(:disabled) {
+          background: #e2e8f0;
+        }
+  
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+  
+      .current-period {
+        h2 {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #2d3748;
+          margin: 0;
+        }
+      }
+    }
+  
+    .monthly-groups {
+      .month-section {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+        .month-header {
+          border-bottom: 2px solid #e2e8f0;
+          padding-bottom: 1rem;
+          margin-bottom: 1rem;
+          height: 3em;
+          align-items: center;
+  
+          h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+          }
+  
+          .month-summary {
+            display: flex;
+            gap: 2rem;
+            height: 100%;
+            align-items: center;
+            font-size: 1.25em !important;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+  
+            span {
+              font-weight: 600;
+  
+              &.income {
+                color: #38a169;
+              }
+  
+              &.expenses {
+                color: #e53e3e;
+              }
+  
+              &.balance {
+                color: #3182ce;
+  
+                &.negative {
+                  color: #e53e3e;
+                }
+              }
+            }
+          }
+        }
+  
+        .transactions-list {
+          .transaction-card {
+            background: #f7fafc;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+  
+            &:hover {
+              background-color: #edf2f7;
+            }
+  
+            .transaction-info {
+              display: flex;
+              flex-direction: column;
+              gap: 0.25rem;
+  
+              .category { font-weight: 600; color: #2d3748; }
+              .description { font-size: 0.9rem; color: #718096; }
+              .date { font-size: 0.85rem; color: #a0aec0; }
+            }
+  
+            .transaction-actions {
+              display: flex;
+              gap: 0.5rem;
+              align-items: center;
+  
+              .amount {
+                font-size: 1.1rem;
+                font-weight: 700;
+                margin-right: 1rem;
+  
+                &.income { color: #38a169; }
+                &.expense { color: #e53e3e; }
+              }
+  
+              .btn-icon {
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 1.2rem;
+                padding: 0.25rem;
+                transition: transform 0.2s;
+  
+                &:hover {
+                  transform: scale(1.2);
+                }
+              }
+            }
+          }
+        }
+  
+        .empty {
+          text-align: center;
+          padding: 2rem;
+          color: #718096;
+        }
+      }
+    }
+  
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+  
+      .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+  
+        h2 {
+          margin-bottom: 1.5rem;
+          color: #1a202c;
+        }
+  
+        .form-group {
+          margin-bottom: 1rem;
+  
+          label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2d3748;
+          }
+  
+          input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+  
+            &:focus {
+              outline: none;
+              border-color: #3182ce;
+            }
+          }
+        }
+  
+        .form-actions {
+          display: flex;
+          gap: 1rem;
+          margin-top: 1.5rem;
+  
+          button {
+            flex: 1;
+          }
+        }
+      }
+    }
+  
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+  
+      &.btn-primary {
+        background-color: #3182ce;
+        color: white;
+        &:hover { background-color: #2c5282; }
+      }
+  
+      &.btn-secondary {
+        background-color: #e2e8f0;
+        color: #2d3748;
+        &:hover { background-color: #cbd5e0; }
+      }
+    }
+  
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #718096;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .monthly-transactions-container {
+      padding: 1rem;
+  
+      .month-navigation {
+        flex-direction: column;
+        gap: 1rem;
+  
+        .current-period h2 {
+          font-size: 1.25rem;
+        }
+      }
+  
+      .month-section .month-header .month-summary {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+  
+      .transaction-card {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 0.5rem;
+  
+        .transaction-actions {
+          width: 100%;
+          justify-content: space-between;
+        }
+      }
+    }
+  }

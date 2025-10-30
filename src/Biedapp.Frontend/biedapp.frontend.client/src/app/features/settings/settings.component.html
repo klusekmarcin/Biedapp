@@ -1,0 +1,106 @@
+<div class="settings-container">
+    <h1>Settings</h1>
+  
+    <div *ngIf="loading" class="loading">Loading settings...</div>
+  
+    <div *ngIf="!loading && systemInfo" class="settings-content">
+      
+      <div class="settings-section">
+        <h2>📱 Application Information</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">Application:</span>
+            <span class="value">{{ systemInfo.application }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Version:</span>
+            <span class="value">{{ systemInfo.version }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Environment:</span>
+            <span class="value">{{ systemInfo.environment }}</span>
+          </div>
+        </div>
+      </div>
+  
+      <div class="settings-section">
+        <h2>💾 Storage Information</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">Storage Type:</span>
+            <span class="value">{{ systemInfo.storage.type }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Events Count:</span>
+            <span class="value">{{ systemInfo.storage.eventCount }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Encrypted:</span>
+            <span class="value">
+              <span class="badge" [class.success]="systemInfo.storage.isEncrypted" [class.warning]="!systemInfo.storage.isEncrypted">
+                {{ systemInfo.storage.isEncrypted ? 'Yes ✓' : 'No' }}
+              </span>
+            </span>
+          </div>
+          <div class="info-item full-width">
+            <span class="label">Location:</span>
+            <span class="value path">{{ systemInfo.storage.location }}</span>
+            <button class="btn-link" (click)="openDataFolder()">📂 Open Folder</button>
+          </div>
+        </div>
+      </div>
+  
+      <div class="settings-section">
+        <h2>🖥️ System Information</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">Machine Name:</span>
+            <span class="value">{{ systemInfo.system.machineName }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">User Name:</span>
+            <span class="value">{{ systemInfo.system.userName }}</span>
+          </div>
+          <div class="info-item full-width">
+            <span class="label">OS Version:</span>
+            <span class="value">{{ systemInfo.system.osVersion }}</span>
+          </div>
+          <div class="info-item full-width">
+            <span class="label">AppData Folder:</span>
+            <span class="value path">{{ systemInfo.system.appDataFolder }}</span>
+          </div>
+        </div>
+      </div>
+  
+      <div class="settings-section">
+        <h2>🗂️ Data Management</h2>
+        <div class="action-buttons">
+          <button class="btn btn-secondary" (click)="exportData()">
+            <span class="icon">📤</span>
+            <span>Export Data</span>
+            <span class="subtitle">Download all transactions as JSON</span>
+          </button>
+          <button class="btn btn-danger" (click)="clearData()">
+            <span class="icon">🗑️</span>
+            <span>Clear All Data</span>
+            <span class="subtitle">⚠️ This action cannot be undone</span>
+          </button>
+        </div>
+      </div>
+  
+      <div class="settings-section">
+        <h2>ℹ️ About Biedapp</h2>
+        <div class="about-content">
+          <p>Biedapp is a home budget management application built with:</p>
+          <ul>
+            <li><strong>Backend:</strong> ASP.NET Core 8.0 with Event Sourcing</li>
+            <li><strong>Frontend:</strong> Angular 18+ with TypeScript</li>
+            <li><strong>Storage:</strong> Encrypted JSON file (local machine)</li>
+            <li><strong>Architecture:</strong> Clean Architecture with CQS (Command Query Separation)</li>
+          </ul>
+          <p class="copyright">© 2025 Biedapp. All rights reserved.</p>
+        </div>
+      </div>
+  
+    </div>
+  </div>

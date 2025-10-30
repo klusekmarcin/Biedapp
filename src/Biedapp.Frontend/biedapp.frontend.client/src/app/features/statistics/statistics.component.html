@@ -1,0 +1,131 @@
+<div class="statistics-container">
+    <div class="statistics-header">
+        <h1>Statistics & Analytics</h1>
+        <div class="period-selector">
+          <button 
+            *ngFor="let months of [3, 6, 12]" 
+            class="period-btn"
+            [class.active]="selectedMonthsPeriod === months"
+            (click)="onMonthsPeriodChange(months)">
+            Last {{ months }} months
+          </button>
+        </div>
+      </div>
+  
+    <div *ngIf="loading" class="loading">Loading statistics...</div>
+  
+    <div *ngIf="!loading" class="statistics-content">
+      
+      <!-- Average Expenses Card -->
+      <div class="stat-card highlight-card">
+        <h2>Average Monthly Expenses</h2>
+        <div class="average-amount">
+          {{ averageExpenses | currencyFormat: 'PLN' }}
+        </div>
+        <div class="period-selector">
+          <button 
+            *ngFor="let months of [3, 6, 12]" 
+            class="period-btn"
+            [class.active]="selectedPeriod === months"
+            (click)="onPeriodChange(months)">
+            {{ months }} months
+          </button>
+        </div>
+      </div>
+  
+      <!-- Balance Trend -->
+      <div class="stat-card full-width">
+        <h2>Balance Trend (Last 12 Months)</h2>
+        <div class="trend-chart">
+          <div *ngFor="let item of balanceTrend" class="trend-bar">
+            <div class="bar-container">
+              <div 
+                class="bar" 
+                [class.positive]="item.balance >= 0"
+                [class.negative]="item.balance < 0"
+                [style.height]="(Math.abs(item.balance) / getMaxBalance() * 100) + 'px'">
+              </div>
+            </div>
+            <div class="bar-label">
+              <span class="month">{{ item.month }}</span>
+              <span class="balance" [class.negative]="item.balance < 0">
+                {{ item.balance | currencyFormat: 'PLN' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Top Expense Categories -->
+      <div class="stat-card">
+        <h2>Top 5 Expense Categories</h2>
+        <div class="category-list">
+          <div *ngFor="let cat of topExpenses; let i = index" class="category-item">
+            <div class="category-rank">{{ i + 1 }}</div>
+            <div class="category-info">
+              <div class="category-name">{{ cat.category }}</div>
+              <div class="category-details">
+                {{ cat.transactionCount }} transactions · {{ cat.percentage | number:'1.1-1' }}%
+              </div>
+            </div>
+            <div class="category-amount">
+              {{ cat.totalAmount | currencyFormat: cat.currency }}
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Expenses by Category -->
+      <div class="stat-card">
+        <h2>All Expense Categories</h2>
+        <div class="category-breakdown">
+          <div *ngFor="let cat of expensesByCategory" class="breakdown-item">
+            <div class="breakdown-header">
+              <span class="category-name">{{ cat.category }}</span>
+              <span class="category-amount">{{ cat.totalAmount | currencyFormat: cat.currency }}</span>
+            </div>
+            <div class="progress-bar">
+              <div 
+                class="progress-fill expense"
+                [style.width]="getProgressWidth(cat.percentage)">
+              </div>
+            </div>
+            <div class="breakdown-footer">
+              <span class="transaction-count">{{ cat.transactionCount }} transactions</span>
+              <span class="percentage">{{ cat.percentage | number:'1.1-1' }}%</span>
+            </div>
+          </div>
+          <div *ngIf="expensesByCategory.length === 0" class="empty-state">
+            No expense data available
+          </div>
+        </div>
+      </div>
+  
+      <!-- Income by Category -->
+      <div class="stat-card">
+        <h2>Income by Category</h2>
+        <div class="category-breakdown">
+          <div *ngFor="let cat of incomeByCategory" class="breakdown-item">
+            <div class="breakdown-header">
+              <span class="category-name">{{ cat.category }}</span>
+              <span class="category-amount">{{ cat.totalAmount | currencyFormat: cat.currency }}</span>
+            </div>
+            <div class="progress-bar">
+              <div 
+                class="progress-fill income"
+                [style.width]="getProgressWidth(cat.percentage)">
+              </div>
+            </div>
+            <div class="breakdown-footer">
+              <span class="transaction-count">{{ cat.transactionCount }} transactions</span>
+              <span class="percentage">{{ cat.percentage | number:'1.1-1' }}%</span>
+            </div>
+          </div>
+          <div *ngIf="incomeByCategory.length === 0" class="empty-state">
+            No income data available
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </div>

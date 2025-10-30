@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Biedapp.ServiceDefaults\Biedapp.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\Biedapp.Application\Biedapp.Application.csproj" />
+    <ProjectReference Include="..\Biedapp.Domain\Biedapp.Domain.csproj" />
+    <ProjectReference Include="..\Biedapp.Infrastructure\Biedapp.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

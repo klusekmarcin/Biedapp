@@ -1,0 +1,318 @@
+.statistics-container {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 2rem;
+    }
+  
+    .statistics-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 1.5rem;
+  
+      .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+        &.full-width {
+          grid-column: 1 / -1;
+        }
+  
+        &.highlight-card {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+  
+          .average-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+          }
+  
+          .period-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+  
+            .period-btn {
+              flex: 1;
+              padding: 0.5rem;
+              border: 1px solid rgba(255, 255, 255, 0.3);
+              background: rgba(255, 255, 255, 0.1);
+              color: white;
+              border-radius: 6px;
+              cursor: pointer;
+              transition: all 0.2s;
+  
+              &:hover {
+                background: rgba(255, 255, 255, 0.2);
+              }
+  
+              &.active {
+                background: white;
+                color: #667eea;
+                font-weight: 600;
+              }
+            }
+          }
+        }
+  
+        h2 {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: #1a202c;
+          margin-bottom: 1.5rem;
+        }
+  
+        .highlight-card h2 {
+          color: white;
+        }
+      }
+  
+      .trend-chart {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: space-between;
+        align-items: flex-end;
+        height: 250px;
+        padding: 1rem 0;
+  
+        .trend-bar {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+  
+          .bar-container {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            min-height: 150px;
+  
+            .bar {
+              width: 80%;
+              min-height: 20px;
+              border-radius: 4px 4px 0 0;
+              transition: all 0.3s;
+  
+              &.positive {
+                background: linear-gradient(180deg, #48bb78 0%, #38a169 100%);
+              }
+  
+              &.negative {
+                background: linear-gradient(180deg, #f56565 0%, #e53e3e 100%);
+              }
+  
+              &:hover {
+                opacity: 0.8;
+              }
+            }
+          }
+  
+          .bar-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+  
+            .month {
+              color: #718096;
+              font-weight: 600;
+            }
+  
+            .balance {
+              color: #2d3748;
+              font-weight: 700;
+  
+              &.negative {
+                color: #e53e3e;
+              }
+            }
+          }
+        }
+      }
+  
+      .category-list {
+        .category-item {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 1rem;
+          border-bottom: 1px solid #e2e8f0;
+          transition: background-color 0.2s;
+  
+          &:last-child {
+            border-bottom: none;
+          }
+  
+          &:hover {
+            background-color: #f7fafc;
+          }
+  
+          .category-rank {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #edf2f7;
+            border-radius: 50%;
+            font-weight: 700;
+            color: #2d3748;
+          }
+  
+          .category-info {
+            flex: 1;
+  
+            .category-name {
+              font-weight: 600;
+              color: #2d3748;
+              display: block;
+            }
+  
+            .category-details {
+              font-size: 0.875rem;
+              color: #718096;
+            }
+          }
+  
+          .category-amount {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #e53e3e;
+          }
+        }
+      }
+  
+      .category-breakdown {
+        .breakdown-item {
+          padding: 1rem 0;
+          border-bottom: 1px solid #e2e8f0;
+  
+          &:last-child {
+            border-bottom: none;
+          }
+  
+          .breakdown-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+  
+            .category-name {
+              font-weight: 600;
+              color: #2d3748;
+            }
+  
+            .category-amount {
+              font-weight: 700;
+              color: #2d3748;
+            }
+          }
+  
+          .progress-bar {
+            height: 8px;
+            background: #edf2f7;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+  
+            .progress-fill {
+              height: 100%;
+              border-radius: 4px;
+              transition: width 0.3s;
+  
+              &.expense {
+                background: linear-gradient(90deg, #fc8181 0%, #e53e3e 100%);
+              }
+  
+              &.income {
+                background: linear-gradient(90deg, #68d391 0%, #38a169 100%);
+              }
+            }
+          }
+  
+          .breakdown-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: #718096;
+  
+            .percentage {
+              font-weight: 600;
+            }
+          }
+        }
+  
+        .empty-state {
+          text-align: center;
+          padding: 2rem;
+          color: #718096;
+        }
+      }
+    }
+  }
+  
+  :host ::ng-deep {
+    .Math {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .statistics-container {
+      padding: 1rem;
+  
+      .statistics-content {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+
+  .statistics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1a202c;
+    }
+  
+    .period-selector {
+      display: flex;
+      gap: 0.5rem;
+  
+      .period-btn {
+        padding: 0.75rem 1.5rem;
+        border: 2px solid #e2e8f0;
+        background: white;
+        color: #2d3748;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+  
+        &:hover {
+          border-color: #cbd5e0;
+          background: #f7fafc;
+        }
+  
+        &.active {
+          background: #3182ce;
+          color: white;
+          border-color: #3182ce;
+        }
+      }
+    }
+  }
