@@ -44,7 +44,7 @@ public sealed class BudgetAggregate
         Category category,
         string description,
         TransactionType type,
-        DateTime date)
+        DateOnly date)
     {
         var transactionId = Guid.NewGuid();
 
@@ -67,7 +67,7 @@ public sealed class BudgetAggregate
         Category category,
         string description,
         TransactionType type,
-        DateTime date)
+        DateOnly date)
     {
         if (!_transactions.ContainsKey(transactionId))
             throw new InvalidOperationException($"Transaction {transactionId} not found");
@@ -166,21 +166,21 @@ public sealed class BudgetAggregate
     {
         return _transactions.Values
             .Where(t => t.Category.Name.Equals(categoryName, StringComparison.OrdinalIgnoreCase))
-            .OrderByDescending(t => t.Date);
+            .OrderByDescending(t => t.TransactionDate);
     }
 
     public IEnumerable<Transaction> GetTransactionsByType(TransactionType type)
     {
         return _transactions.Values
             .Where(t => t.Type == type)
-            .OrderByDescending(t => t.Date);
+            .OrderByDescending(t => t.TransactionDate);
     }
 
-    public IEnumerable<Transaction> GetTransactionsByDateRange(DateTime from, DateTime to)
+    public IEnumerable<Transaction> GetTransactionsByDateRange(DateOnly from, DateOnly to)
     {
         return _transactions.Values
-            .Where(t => t.Date >= from && t.Date <= to)
-            .OrderByDescending(t => t.Date);
+            .Where(t => t.TransactionDate >= from && t.TransactionDate <= to)
+            .OrderByDescending(t => t.TransactionDate);
     }
 
     public IEnumerable<string> GetAllCategories()

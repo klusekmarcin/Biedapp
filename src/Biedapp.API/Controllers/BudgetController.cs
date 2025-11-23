@@ -2,7 +2,6 @@
 using Biedapp.Application.DTOs;
 using Biedapp.Application.Interfaces;
 using Biedapp.Application.Queries;
-using Biedapp.Application.Services;
 using Biedapp.Domain.Enums;
 
 using Microsoft.AspNetCore.Mvc;
@@ -31,8 +30,8 @@ public class BudgetController : ControllerBase
     [HttpGet("transactions")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetTransactions(
-        [FromQuery] DateTime? fromDate,
-        [FromQuery] DateTime? toDate,
+        [FromQuery] DateOnly? fromDate,
+        [FromQuery] DateOnly? toDate,
         [FromQuery] string? category,
         [FromQuery] TransactionType? type,
         [FromQuery] int? limit)
@@ -387,7 +386,7 @@ public class BudgetController : ControllerBase
     {
         try
         {
-            if(!DateTime.TryParse($"{year}-{month}-01T00:00:00Z", out _))
+            if (!DateTime.TryParse($"{year}-{month}-01T00:00:00Z", out _))
             {
                 return BadRequest(new { error = "Invalid year or month" });
             }

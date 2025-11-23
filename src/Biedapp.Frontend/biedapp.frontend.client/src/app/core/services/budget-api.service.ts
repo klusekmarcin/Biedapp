@@ -29,10 +29,10 @@ export class BudgetApiService {
     let params = new HttpParams();
 
     if (fromDate) {
-      params = params.set('fromDate', fromDate.toISOString());
+      params = params.set('fromDate', fromDate.toISOString().substring(0, 10));
     }
     if (toDate) {
-      params = params.set('toDate', toDate.toISOString());
+      params = params.set('toDate', toDate.toISOString().substring(0, 10));
     }
     if (category) {
       params = params.set('category', category);

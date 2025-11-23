@@ -27,7 +27,7 @@ public record UpdateTransactionCommand
         if (string.IsNullOrWhiteSpace(Currency))
             throw new ArgumentException("Currency is required", nameof(Currency));
 
-        if (Date > DateTime.Now.AddDays(1))
+        if (Date > DateTime.UtcNow.Date.AddDays(1))
             throw new ArgumentException("Date cannot be in the future", nameof(Date));
     }
 }

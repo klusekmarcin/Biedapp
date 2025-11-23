@@ -1,14 +1,19 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { ModalComponent } from "./shared/components/modal/modal.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [
+    RouterOutlet, 
+    RouterLink,
+    RouterLinkActive,
+    ModalComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Home Budget App';
+  title = 'Biedapp';
 }

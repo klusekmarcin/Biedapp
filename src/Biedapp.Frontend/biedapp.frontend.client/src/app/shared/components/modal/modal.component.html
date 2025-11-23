@@ -1,0 +1,45 @@
+<div class="modal-backdrop" *ngIf="isOpen" (click)="onClose()">
+  <div class="modal-container" [ngClass]="modalSizeClass" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ config?.title || 'Modal' }}</h2>
+      <button type="button" class="modal-close" (click)="onClose()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <ng-container #templateContainer></ng-container>
+    </div>
+    
+    <div class="modal-footer">
+      <button 
+        type="button" 
+        [class]="getButtonClass('close')"
+        [style.color]="config?.closeButtonConfig?.customColor || null"
+        [style.background-color]="config?.closeButtonConfig?.customBackgroundColor || null"
+        (click)="onClose()">
+        {{ config?.closeButtonConfig?.customText ?? 'Close' }}
+      </button>
+      
+      <button 
+        *ngIf="config?.resetButtonConfig?.show ?? false" 
+        type="button" 
+        [class]="getButtonClass('reset')"
+        [style.color]="config?.resetButtonConfig?.customColor || null"
+        [style.background-color]="config?.resetButtonConfig?.customBackgroundColor || null"
+        (click)="onReset()">
+        {{ config?.resetButtonConfig?.customText ?? 'Reset' }}
+      </button>
+      
+      <button 
+        *ngIf="config?.submitButtonConfig?.show ?? false" 
+        type="button" 
+        [class]="getButtonClass('submit')"
+        [style.color]="config?.submitButtonConfig?.customColor || null"
+        [style.background-color]="config?.submitButtonConfig?.customBackgroundColor || null"
+        (click)="onSubmit()">
+        {{ config?.submitButtonConfig?.customText ?? 'Submit' }}
+      </button>
+    </div>
+  </div>
+</div>

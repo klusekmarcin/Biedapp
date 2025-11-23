@@ -9,7 +9,8 @@ public sealed record Transaction
     public Category Category { get; init; }
     public string Description { get; init; }
     public TransactionType Type { get; init; }
-    public DateTime Date { get; init; }
+    public DateOnly TransactionDate { get; init; }
+    public DateTimeOffset Timestamp { get; init; } = DateTimeOffset.UtcNow;
 
     public Transaction(
         Guid id,
@@ -17,7 +18,7 @@ public sealed record Transaction
         Category category,
         string description,
         TransactionType type,
-        DateTime date)
+        DateOnly transactionDate)
     {
         if (id == Guid.Empty)
             throw new ArgumentException("Transaction ID cannot be empty", nameof(id));
@@ -30,7 +31,8 @@ public sealed record Transaction
         Category = category;
         Description = description?.Trim() ?? string.Empty;
         Type = type;
-        Date = date;
+        TransactionDate = transactionDate;
+        Timestamp = DateTimeOffset.UtcNow;
     }
 
     public bool IsIncome() => Type == TransactionType.Income;

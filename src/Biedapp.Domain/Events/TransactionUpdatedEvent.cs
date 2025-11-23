@@ -4,7 +4,7 @@ namespace Biedapp.Domain.Events;
 public record TransactionUpdatedEvent : IEvent
 {
     public Guid EventId { get; init; }
-    public DateTime Timestamp { get; init; }
+    public DateTimeOffset Timestamp { get; init; }
     public string EventType => nameof(TransactionUpdatedEvent);
 
     public Guid TransactionId { get; init; }
@@ -13,7 +13,7 @@ public record TransactionUpdatedEvent : IEvent
     public string Category { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
     public TransactionType Type { get; init; }
-    public DateTime Date { get; init; }
+    public DateOnly Date { get; init; }
 
     public TransactionUpdatedEvent() { }
     public TransactionUpdatedEvent(
@@ -23,10 +23,10 @@ public record TransactionUpdatedEvent : IEvent
         string category,
         string description,
         TransactionType type,
-        DateTime date)
+        DateOnly date)
     {
         EventId = Guid.NewGuid();
-        Timestamp = DateTime.UtcNow;
+        Timestamp = DateTimeOffset.UtcNow;
         TransactionId = transactionId;
         Amount = amount;
         Currency = currency;

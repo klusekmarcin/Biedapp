@@ -9,6 +9,6 @@ namespace Biedapp.Domain.Events;
 public interface IEvent
 {
     Guid EventId { get; }
-    DateTime Timestamp { get; }
+    DateTimeOffset Timestamp { get; }
     string EventType { get; }
 }

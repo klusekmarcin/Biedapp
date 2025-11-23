@@ -1,5 +1,6 @@
 ﻿using Biedapp.Infrastructure.Configuration;
 using Biedapp.Infrastructure.EventStore;
+using Biedapp.Infrastructure.Models;
 using Biedapp.Infrastructure.Security;
 
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -8,23 +9,34 @@ namespace Biedapp.API.Extensions;
 internal static class IServiceCollectionExtensions
 {
     private const string _storageTypAppSettingName = "AppSettings:Storage:Type";
-    private const string _defaultStorageType = "File";
+    private static EventStoreTypes _defaultStorageType => EventStoreTypes.InMemory;
 
     public static IServiceCollection AddEventStoreSupport(this IServiceCollection services, IConfiguration configuration)
     {
-        string storageType = configuration[_storageTypAppSettingName] ?? _defaultStorageType;
+        string storageType = configuration[_storageTypAppSettingName];
+
+        ILogger<Program> logger = services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+
+        if (string.IsNullOrWhiteSpace(storageType))
+        {
+            storageType = _defaultStorageType.ToString();
+            logger.LogWarning("Storage type didn't find in app settings file '{appSettingName}'. Using '{defaultStorageType}' as default storage.", _storageTypAppSettingName, _defaultStorageType);
+        }
+
+        if (!Enum.TryParse(storageType, true, out EventStoreTypes eventStoreType))
+        {
+            logger.LogWarning("Storage type value: '{eventStoreType}' not supported. Set default value '{defaultValue}'.", storageType, _defaultStorageType);
+            eventStoreType = _defaultStorageType;
+        }
 
         services.AddSingleton<IEventStore>(sp =>
         {
-            ILogger<Program> logger = sp.GetRequiredService<ILogger<Program>>();
-
-            switch (storageType.ToLower())
+            switch (eventStoreType)
             {
-                case "memory" or "inmemory":
+                case EventStoreTypes.InMemory:
                     logger.LogInformation("Using InMemory event store (data will be lost on restart)");
                     return new InMemoryEventStore();
-                case "file":
-                default:
+                case EventStoreTypes.File:
                     string eventsFilePath = EventStoreConfiguration.GetDefaultEventsFilePath();
                     string encryptionKey = EventStoreConfiguration.GetEncryptionKey();
                     EncryptionService encryptionService = new(encryptionKey);
@@ -32,6 +44,8 @@ internal static class IServiceCollectionExtensions
                     logger.LogInformation("Using JSON File event store at: {FilePath}", eventsFilePath);
                     logger.LogInformation("Data is encrypted with machine-specific key");
                     return new JsonFileEventStore(eventsFilePath, encryptionService);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(eventStoreType), $"Not expected storage type value: {eventStoreType}");
             };
         });
 

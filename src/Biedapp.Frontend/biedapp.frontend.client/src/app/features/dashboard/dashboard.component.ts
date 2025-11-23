@@ -8,6 +8,7 @@ import { Transaction, TransactionType, CreateTransactionRequest } from '../../co
 import { CategorySummary } from '../../core/models/category-summary.model';
 import { CurrencyFormatPipe } from '../../shared/pipes/currency-format.pipe';
 import { Title } from '@angular/platform-browser';
+import { ModalService, ModalTemplate } from '../../core/services/modal.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,7 +25,6 @@ export class DashboardComponent implements OnInit {
   categories: string[] = [];
   loading = true;
   error: string | null = null;
-  showAddModal = false;
   
   TransactionType = TransactionType;
 
@@ -34,10 +34,11 @@ export class DashboardComponent implements OnInit {
     category: '',
     description: '',
     type: TransactionType.Expense,
-    date: new Date()
+    transactionDate: new Date()
   };
 
   constructor(private budgetApi: BudgetApiService,
+    private modalService: ModalService,
     title: Title
   ) {
     title.setTitle("Dashboard - Biedapp");
@@ -94,25 +95,36 @@ export class DashboardComponent implements OnInit {
   }
 
   openAddModal(): void {
-    this.showAddModal = true;
-    this.formData = {
-      amount: 0,
-      currency: 'PLN',
-      category: '',
-      description: '',
-      type: TransactionType.Expense,
-      date: new Date()
-    };
+    this.modalService.open({
+      templateName: ModalTemplate.TRANSACTION_CREATE,
+      title: 'Add Transaction',
+      submitButtonConfig: {
+        customText: 'Create',
+        show: true,
+      },
+      resetButtonConfig: {
+        show: true,
+      },
+    }).subscribe(result => {
+      if(result.action === 'submit') {
+        this.saveTransaction(result.data);
+      }
+    });
   }
 
-  closeAddModal(): void {
-    this.showAddModal = false;
+  displayTransaction(transaction: Transaction) {
+    this.modalService.open({
+      templateName: ModalTemplate.TRANSACTION_DELETE,
+      title: 'Transaction details',
+      data: transaction
+    });
   }
 
-  saveTransaction(): void {
-    this.budgetApi.addTransaction(this.formData).subscribe({
+  saveTransaction(createTransaction: CreateTransactionRequest): void {
+    if(!createTransaction) return;
+
+    this.budgetApi.addTransaction(createTransaction).subscribe({
       next: () => {
-        this.closeAddModal();
         this.loadDashboardData();
       },
       error: (err) => console.error('Error adding transaction:', err)

@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BudgetApiService } from '../../core/services/budget-api.service';
-import { Transaction, TransactionType, CreateTransactionRequest } from '../../core/models/transaction.model';
+import { Transaction, TransactionType, CreateTransactionRequest, UpdateTransactionRequest } from '../../core/models/transaction.model';
 import { BudgetSummary } from '../../core/models/budget-summary.model';
 import { CurrencyFormatPipe } from '../../shared/pipes/currency-format.pipe';
 import { Title } from '@angular/platform-browser';
+import { ModalService, ModalTemplate } from '../../core/services/modal.service';
 
 interface MonthlyGroup {
   year: number;
@@ -45,11 +46,12 @@ export class MonthlyTransactionsComponent implements OnInit {
     category: '',
     description: '',
     type: TransactionType.Expense,
-    date: new Date()
+    transactionDate: new Date()
   };
 
   constructor(
     private budgetApi: BudgetApiService,
+    private modalService: ModalService,
     title: Title) {
       title.setTitle("Monthly transactions - Biedapp");
     }
@@ -61,27 +63,19 @@ export class MonthlyTransactionsComponent implements OnInit {
 
   loadMonthlyTransactions(): void {
     this.loading = true;
-    const monthsToShow = 1;
-    const promises: Promise<MonthlyGroup>[] = [];
 
-    for (let i = 0; i < monthsToShow; i++) {
-      const date = new Date(this.currentYear, this.currentMonth - 1 - i, 1);
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
+    const year = this.currentYear;
+    const month = this.currentMonth;
 
-      const promise = this.loadMonthData(year, month);
-      promises.push(promise);
-    }
-
-    Promise.all(promises).then(groups => {
-      this.monthlyGroups = groups;
+    this.loadMonthData(year, month).then(budget => {
+      this.monthlyGroups = [budget];
       this.loading = false;
     });
   }
 
   private async loadMonthData(year: number, month: number): Promise<MonthlyGroup> {
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 0);
+    var startDate = new Date(year, month - 1, 2);
+    var endDate = new Date(year, month, 1);
 
     const transactions = await this.budgetApi.getTransactions(startDate, endDate).toPromise() || [];
     
@@ -96,7 +90,7 @@ export class MonthlyTransactionsComponent implements OnInit {
     return {
       year,
       month,
-      monthName: startDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+      monthName: startDate.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }),
       transactions,
       summary: {
         income,
@@ -144,50 +138,82 @@ export class MonthlyTransactionsComponent implements OnInit {
     return this.currentYear === now.getFullYear() && this.currentMonth === now.getMonth() + 1;
   }
 
-  openAddForm(): void {
-    this.showForm = true;
-    this.editingId = null;
-    this.formData = {
-      amount: 0,
-      currency: 'PLN',
-      category: '',
-      description: '',
-      type: TransactionType.Expense,
-      date: new Date()
-    };
+  openCreateTransactionModal(): void {
+    this.modalService.open({
+      templateName: ModalTemplate.TRANSACTION_CREATE,
+      title: 'Create Transaction',
+      submitButtonConfig: {
+        show: true,
+        customText: 'Create'
+      },
+      resetButtonConfig: {
+        show: true,
+      },
+    }).subscribe(result => {
+      if(result.action === 'submit') {
+        this.createTransaction(result.data);
+      }
+    });
   }
 
-  editTransaction(transaction: Transaction): void {
-    this.showForm = true;
-    this.editingId = transaction.id;
-    this.formData = {
-      amount: transaction.amount,
-      currency: transaction.currency,
-      category: transaction.category,
-      description: transaction.description,
-      type: transaction.type,
-      date: new Date(transaction.date)
-    };
+  openEditTransactionModal(transaction: Transaction): void {
+    this.modalService.open({
+      templateName: ModalTemplate.TRANSACTION_EDIT,
+      title: 'Edit Transaction',
+      submitButtonConfig: {
+        show: true,
+        customText: 'Update'
+      },
+      resetButtonConfig: {
+        show: true,
+      },
+      data: transaction
+    }).subscribe(result => {
+      if(result.action === 'submit') {
+        this.updateTransaction(result.data);
+      }
+    });
   }
 
-  saveTransaction(): void {
-    if (this.editingId) {
-      this.budgetApi.updateTransaction(this.editingId, { ...this.formData, id: this.editingId }).subscribe({
-        next: () => {
-          this.loadMonthlyTransactions();
-          this.closeForm();
-        },
-        error: (err) => console.error('Error updating transaction:', err)
-      });
-    } else {
-      this.budgetApi.addTransaction(this.formData).subscribe({
-        next: () => {
-          this.loadMonthlyTransactions();
-          this.closeForm();
-        },
-        error: (err) => console.error('Error adding transaction:', err)
-      });
-    }
+  openDeleteTransactionModal(transaction: Transaction): void {
+    this.modalService.open({
+      templateName: ModalTemplate.TRANSACTION_DELETE,
+      title: 'Delete Transaction',
+      submitButtonConfig: {
+        show: true,
+        customText: 'Delete',
+        customBackgroundColor: 'red',
+        customColor: 'white'
+      },
+      data: transaction
+    }).subscribe(result => {
+      if(result.action === 'submit') {
+        this.deleteTransaction(result.data);
+      }
+    });
+    
+  }
+
+  createTransaction(createTransaction: CreateTransactionRequest): void {
+    if(!createTransaction) return;
+
+    this.budgetApi.addTransaction(createTransaction).subscribe({
+      next: () => {
+        this.loadMonthlyTransactions();
+      },
+      error: (err) => console.error('Error adding transaction:', err)
+    });
+  }
+
+  updateTransaction(updateTransaction: UpdateTransactionRequest): void {
+    if(!updateTransaction) return;
+
+    this.budgetApi.updateTransaction(updateTransaction.id, updateTransaction).subscribe({
+      next: () => {
+        this.loadMonthlyTransactions();
+      },
+      error: (err) => console.error('Error updating transaction:', err)
+    });
   }
 
   deleteTransaction(id: string): void {
@@ -197,11 +223,6 @@ export class MonthlyTransactionsComponent implements OnInit {
         error: (err) => console.error('Error deleting transaction:', err)
       });
     }
-  }
-
-  closeForm(): void {
-    this.showForm = false;
-    this.editingId = null;
   }
 
   getTypeClass(type: TransactionType): string {

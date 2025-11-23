@@ -10,7 +10,8 @@ public record TransactionDto
     public string Category { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
     public TransactionType Type { get; init; }
-    public DateTime Date { get; init; }
+    public DateOnly TransactionDate { get; init; }
+    public DateTimeOffset Timestamp { get; init; }
 
     public string TypeDisplay => Type == TransactionType.Income ? "Income" : "Expense";
     public string AmountDisplay => Type == TransactionType.Income

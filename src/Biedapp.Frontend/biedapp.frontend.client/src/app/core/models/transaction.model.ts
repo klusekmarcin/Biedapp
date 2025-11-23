@@ -10,7 +10,7 @@ export enum TransactionType {
     category: string;
     description: string;
     type: TransactionType;
-    date: Date;
+    transactionDate: Date;
     typeDisplay?: string;
     amountDisplay?: string;
   }
@@ -21,7 +21,7 @@ export enum TransactionType {
     category: string;
     description: string;
     type: TransactionType;
-    date: Date;
+    transactionDate: Date;
   }
   
   export interface UpdateTransactionRequest {
@@ -31,5 +31,5 @@ export enum TransactionType {
     category: string;
     description: string;
     type: TransactionType;
-    date: Date;
+    transactionDate: Date;
   }

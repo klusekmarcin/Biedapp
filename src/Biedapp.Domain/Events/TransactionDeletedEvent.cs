@@ -2,7 +2,7 @@
 public record TransactionDeletedEvent : IEvent
 {
     public Guid EventId { get; init; }
-    public DateTime Timestamp { get; init; }
+    public DateTimeOffset Timestamp { get; init; }
     public string EventType => nameof(TransactionDeletedEvent);
 
     public Guid TransactionId { get; init; }
@@ -11,7 +11,7 @@ public record TransactionDeletedEvent : IEvent
     public TransactionDeletedEvent(Guid transactionId)
     {
         EventId = Guid.NewGuid();
-        Timestamp = DateTime.UtcNow;
+        Timestamp = DateTimeOffset.UtcNow;
         TransactionId = transactionId;
     }
 }

@@ -45,7 +45,7 @@ public class BudgetService : IBudgetService
             new Category(command.Category),
             command.Description,
             command.Type,
-            command.Date);
+            DateOnly.FromDateTime(command.Date));
 
         await _eventStore.AppendEventsAsync(budget.UncommittedEvents);
         budget.MarkEventsAsCommitted();
@@ -63,7 +63,7 @@ public class BudgetService : IBudgetService
             new Category(command.Category),
             command.Description,
             command.Type,
-            command.Date);
+            DateOnly.FromDateTime(command.Date));
 
         await _eventStore.AppendEventsAsync(budget.UncommittedEvents);
         budget.MarkEventsAsCommitted();
@@ -89,14 +89,18 @@ public class BudgetService : IBudgetService
         BudgetAggregate budget = await GetCurrentBudgetAsync();
         IEnumerable<Transaction> transactions = budget.Transactions.AsEnumerable();
 
+        transactions = transactions
+            .OrderByDescending(t => t.TransactionDate)
+            .ThenByDescending(t => t.Timestamp);
+
         // Apply filters
         if (query != null)
         {
             if (query.FromDate.HasValue)
-                transactions = transactions.Where(t => t.Date >= query.FromDate.Value);
+                transactions = transactions.Where(t => t.TransactionDate >= query.FromDate.Value);
 
             if (query.ToDate.HasValue)
-                transactions = transactions.Where(t => t.Date <= query.ToDate.Value);
+                transactions = transactions.Where(t => t.TransactionDate <= query.ToDate.Value);
 
             if (!string.IsNullOrWhiteSpace(query.Category))
                 transactions = transactions.Where(t =>
@@ -109,10 +113,7 @@ public class BudgetService : IBudgetService
                 transactions = transactions.Take(query.Limit.Value);
         }
 
-        return transactions
-            .OrderByDescending(t => t.Date)
-            .ThenByDescending(t => t.Id)
-            .Select(t => new TransactionDto
+        return transactions.Select(t => new TransactionDto
             {
                 Id = t.Id,
                 Amount = t.Amount.Amount,
@@ -120,7 +121,7 @@ public class BudgetService : IBudgetService
                 Category = t.Category.Name,
                 Description = t.Description,
                 Type = t.Type,
-                Date = t.Date
+                TransactionDate = t.TransactionDate
             })
             .ToList();
     }
@@ -141,7 +142,7 @@ public class BudgetService : IBudgetService
             Category = transaction.Category.Name,
             Description = transaction.Description,
             Type = transaction.Type,
-            Date = transaction.Date
+            TransactionDate = transaction.TransactionDate
         };
     }
 
@@ -211,8 +212,8 @@ public class BudgetService : IBudgetService
     public async Task<Dictionary<string, decimal>> GetMonthlyIncomeExpensesAsync(int year, int month)
     {
         BudgetAggregate budget = await GetCurrentBudgetAsync();
-        DateTime startDate = new DateTime(year, month, 1);
-        DateTime endDate = startDate.AddMonths(1).AddDays(-1);
+        DateOnly startDate = new(year, month, 1);
+        DateOnly endDate = startDate.AddMonths(1).AddDays(-1);
 
         IEnumerable<Transaction> transactions = budget.GetTransactionsByDateRange(startDate, endDate);
 
@@ -235,8 +236,8 @@ public class BudgetService : IBudgetService
     public async Task<BudgetSummaryDto> GetMonthlyBudgetSummaryAsync(int year, int month)
     {
         BudgetAggregate budget = await GetCurrentBudgetAsync();
-        DateTime startDate = new(year, month, 1);
-        DateTime endDate = startDate.AddMonths(1).AddDays(-1);
+        DateOnly startDate = new(year, month, 1);
+        DateOnly endDate = startDate.AddMonths(1).AddDays(-1);
 
         List<Transaction> monthlyTransactions = budget.GetTransactionsByDateRange(startDate, endDate).ToList();
 
