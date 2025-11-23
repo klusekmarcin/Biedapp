@@ -10,7 +10,7 @@
         ← Previous
       </button>
       <div class="current-period">
-        <h2>{{ monthlyGroups[0].monthName || 'Loading...' }}</h2>
+        <h2>{{ monthlyGroups[0]?.monthName || 'Loading...' }}</h2>
       </div>
       <button class="btn-nav" (click)="nextMonth()" [disabled]="isCurrentMonth()">
         Next →
